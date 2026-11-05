@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Terapia">
+  <defs>
+    <linearGradient id="l" x1="65" y1="90" x2="345" y2="280" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#C7A6F2"/><stop offset="1" stop-color="#A986E6"/></linearGradient>
+    <linearGradient id="b" x1="167" y1="208" x2="447" y2="392" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#A8D8F7"/><stop offset="1" stop-color="#7BBDF0"/></linearGradient>
+  </defs>
+  <path fill="url(#l)" d="M65,185 a140,95 0 1,0 280,0 a140,95 0 1,0 -280,0z M130,262 L92,345 L205,278 z"/>
+  <path fill="url(#b)" stroke="#fff" stroke-width="10" d="M167,300 a140,92 0 1,0 280,0 a140,92 0 1,0 -280,0z M325,385 L420,442 L378,372 z"/>
+</svg>

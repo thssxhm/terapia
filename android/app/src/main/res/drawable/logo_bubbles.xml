@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo do Terapia: dois balões de fala (lilás e azul claro) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="512dp" android:height="512dp"
+    android:viewportWidth="512" android:viewportHeight="512">
+    <path android:pathData="M65,185 a140,95 0 1,0 280,0 a140,95 0 1,0 -280,0z M130,262 L92,345 L205,278 z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="65" android:startY="90" android:endX="345" android:endY="280">
+                <item android:offset="0" android:color="#FFC7A6F2" />
+                <item android:offset="1" android:color="#FFA986E6" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:pathData="M167,300 a140,92 0 1,0 280,0 a140,92 0 1,0 -280,0z M325,385 L420,442 L378,372 z"
+        android:strokeColor="#FFFFFFFF" android:strokeWidth="10">
+        <aapt:attr name="android:fillColor">
+            <gradient android:type="linear" android:startX="167" android:startY="208" android:endX="447" android:endY="392">
+                <item android:offset="0" android:color="#FFA8D8F7" />
+                <item android:offset="1" android:color="#FF7BBDF0" />
+            </gradient>
+        </aapt:attr>
+    </path>
+</vector>
