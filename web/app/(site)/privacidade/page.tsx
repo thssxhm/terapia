@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "../../site.config";
+import { site } from "../../../site.config";
 
 export const metadata: Metadata = { title: "Política de privacidade" };
 
@@ -25,7 +25,7 @@ export default function Privacidade() {
       <h2>2. Dados que coletamos</h2>
       <table>
         <tbody>
-          <tr><th>Psicólogo</th><td>Nome, CRP, e-mail, telefone, dados da assinatura (via Google Play) e token de notificação do aparelho.</td></tr>
+          <tr><th>Psicólogo</th><td>Nome, CRP, e-mail, telefone, dados das assinaturas (via Google Play e Stripe) e token de notificação do aparelho.</td></tr>
           <tr><th>Paciente (cadastrado pelo psicólogo)</th><td>Nome, idade, telefone, e-mail, dias e horários das sessões.</td></tr>
           <tr><th>Registros clínicos (dados sensíveis de saúde)</th><td>Anamnese, evolução, informações importantes, anotações pré/pós sessão do psicólogo e arquivos anexados.</td></tr>
           <tr><th>Registros do paciente</th><td>Humor diário e anotações, anotações pré/pós sessão, pedidos de confirmação/cancelamento/ajuste, mensagens de emergência e chat.</td></tr>
@@ -52,6 +52,7 @@ export default function Privacidade() {
         <li><b>Supabase</b> (banco de dados, autenticação e arquivos), com criptografia em trânsito (TLS) e em repouso.</li>
         <li><b>Google Firebase Cloud Messaging</b> (entrega de notificações) e <b>Google Play</b> (pagamentos de assinatura).</li>
         <li><b>Resend</b> (envio do e-mail com o código de acesso).</li>
+        <li><b>Stripe</b> (pagamento da assinatura do painel desktop). Os dados do cartão são tratados diretamente pelo Stripe e nunca ficam armazenados no {site.name}.</li>
         <li>Esses fornecedores podem processar dados fora do Brasil, com salvaguardas contratuais (art. 33 da LGPD).</li>
       </ul>
 

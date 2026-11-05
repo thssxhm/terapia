@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { site } from "../../site.config";
+import { site } from "../../../site.config";
 
 export const metadata: Metadata = { title: "Excluir conta e dados" };
 

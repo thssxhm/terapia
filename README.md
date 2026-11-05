@@ -95,9 +95,38 @@ Depois: **Database → Webhooks → Create** → tabela `notifications`, evento 
 ### 7. Site (Vercel)
 Edite `web/site.config.ts` (**e-mail de contato real** e responsável) antes de enviar o app à Play. Para atualizar, publique novamente pela Vercel (ou conecte a pasta `web/` a um repositório GitHub na Vercel).
 
+### 8. Terapia Desktop (painel web pago — R$ 14,99/mês pelo Stripe)
+
+O painel fica em `https://SEU-SITE/painel`. Fluxo: o psicólogo entra → 7 dias grátis (sem cartão, uma vez por conta) → depois paga pelo Stripe → o **webhook** confirma o pagamento e libera o acesso sozinho. Se cancelar ou o cartão falhar, o acesso é bloqueado automaticamente.
+
+1. **Banco:** rode `supabase/migrations/20261106000000_desktop.sql` no SQL Editor do Supabase.
+2. **Supabase → Authentication → URL Configuration:** em *Site URL* coloque `https://terapia-pi.vercel.app` e em *Redirect URLs* adicione `https://terapia-pi.vercel.app/painel` (necessário para o login com Google no navegador).
+3. **Stripe** (https://dashboard.stripe.com — comece no **modo de teste**):
+   - Crie a conta (pessoa física com CPF é aceita) e preencha os dados bancários para receber.
+   - **Catálogo de produtos → Adicionar produto:** "Terapia Desktop", preço **recorrente mensal de R$ 14,99** (BRL). Copie o **ID do preço** (`price_...`).
+   - **Configurações → Faturamento → Portal do cliente:** ative "Cancelar assinaturas" e "Atualizar forma de pagamento" e salve.
+   - **Desenvolvedores → Webhooks → Adicionar destino:** URL `https://terapia-pi.vercel.app/api/stripe/webhook`, eventos: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`, `invoice.payment_failed`. Copie o **segredo de assinatura** (`whsec_...`).
+   - **Desenvolvedores → Chaves de API:** copie a **chave secreta** (`sk_test_...` no teste, `sk_live_...` em produção).
+4. **Vercel → projeto terapia → Settings → Environment Variables** (ambiente *Production*):
+
+   | Nome | Valor |
+   |---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL do Supabase |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | chave anon do Supabase |
+   | `SUPABASE_SERVICE_ROLE_KEY` | chave service_role do Supabase (**secreta**) |
+   | `STRIPE_SECRET_KEY` | `sk_test_...` / `sk_live_...` |
+   | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
+   | `STRIPE_PRICE_ID` | `price_...` |
+   | `NEXT_PUBLIC_SITE_URL` | `https://terapia-pi.vercel.app` |
+
+   Depois **publique de novo** (Deployments → ⋯ → Redeploy): as variáveis `NEXT_PUBLIC_*` só entram no site em uma nova publicação.
+5. **Teste** com o cartão `4242 4242 4242 4242`, qualquer data futura e qualquer CVC. Confira em Stripe → Webhooks se os eventos voltaram com "200".
+6. **Produção:** repita o passo 3 no modo *live* (produto, webhook e chaves são separados) e troque as variáveis na Vercel.
+
 ---
 
 ## Pontos de atenção
+- **Política da Google Play:** não coloque dentro do app Android links ou textos chamando para pagar o desktop no site. A Play proíbe direcionar o usuário para pagamentos fora dela. Divulgue o desktop pelo site, por e-mail etc.
 - **Anúncios (AdMob):** este app **não** tem anúncios de propósito — ver a seção "AdMob" na conversa/README de entrega.
 - O psicólogo deve guardar os registros por 5 anos (Res. CFP 001/2009): exporte o PDF antes de excluir paciente/conta.
 - Ao excluir conta de psicólogo, os arquivos do Storage ficam órfãos; limpe periodicamente pelo painel (Storage → attachments) ou crie uma função de limpeza.

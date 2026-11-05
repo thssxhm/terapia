@@ -1,4 +1,4 @@
-import { site } from "../site.config";
+import { site } from "../../site.config";
 
 const psyFeatures = [
   ["📋", "Prontuário completo", "Anamnese, evolução, informações importantes (nomes e datas), anotações pré e pós sessão e anexos em PDF/DOC."],
@@ -82,6 +82,14 @@ export default function Home() {
             {[10, 20, 30, 40, 50].map((n) => (
               <div className="plan" key={n}><strong>{n}</strong>pacientes</div>
             ))}
+          </div>
+          <div className="card" style={{ marginTop: 16, display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+            <div className="icon sky">💻</div>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <h3 style={{ margin: 0 }}>Terapia Desktop — R$ 14,99/mês</h3>
+              <p>Use o painel completo do psicólogo no computador. 7 dias grátis, sem cartão. Pagamento seguro pelo Stripe; cancele quando quiser.</p>
+            </div>
+            <a className="btn primary" href="/painel">Acessar o painel</a>
           </div>
         </div>
       </section>
