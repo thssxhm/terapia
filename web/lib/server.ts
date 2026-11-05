@@ -4,13 +4,14 @@ import Stripe from "stripe";
 
 export function env(name: string): string {
   const v = process.env[name];
-  if (!v) throw new Error(`Variável de ambiente ${name} não configurada na Vercel`);
+  if (!v) throw new Error(`Variável de ambiente ${name} não configurada na Cloudflare`);
   return v;
 }
 
 let _stripe: Stripe | null = null;
 export function stripe(): Stripe {
-  if (!_stripe) _stripe = new Stripe(env("STRIPE_SECRET_KEY"));
+  // Na Cloudflare as chamadas usam fetch (o cliente HTTP padrão do Node não existe lá)
+  if (!_stripe) _stripe = new Stripe(env("STRIPE_SECRET_KEY"), { httpClient: Stripe.createFetchHttpClient() });
   return _stripe;
 }
 

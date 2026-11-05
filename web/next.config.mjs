@@ -1,3 +1,5 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
@@ -11,4 +13,8 @@ const nextConfig = {
     }];
   },
 };
+
+// Permite usar as variáveis do Cloudflare durante "npm run dev"
+initOpenNextCloudflareForDev();
+
 export default nextConfig;

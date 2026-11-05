@@ -1,7 +1,7 @@
 // Webhook do Stripe: é AQUI que o acesso ao desktop é liberado/bloqueado automaticamente.
 // O Stripe chama esta URL quando o pagamento é confirmado, renovado, falha ou é cancelado.
 // Docs: https://docs.stripe.com/billing/subscriptions/webhooks
-import type Stripe from "stripe";
+import Stripe from "stripe";
 import { admin, env, json, stripe } from "../../../../lib/server";
 
 export const runtime = "nodejs";
@@ -28,7 +28,10 @@ export async function POST(req: Request) {
   const signature = req.headers.get("stripe-signature") ?? "";
   let event: Stripe.Event;
   try {
-    event = stripe().webhooks.constructEvent(body, signature, env("STRIPE_WEBHOOK_SECRET"));
+    // Versão assíncrona + Web Crypto: funciona no Cloudflare Workers
+    event = await stripe().webhooks.constructEventAsync(
+      body, signature, env("STRIPE_WEBHOOK_SECRET"), undefined, Stripe.createSubtleCryptoProvider(),
+    );
   } catch (e) {
     console.error("Assinatura do webhook inválida", e);
     return json({ error: "assinatura inválida" }, 400);

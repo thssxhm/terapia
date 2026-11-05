@@ -1,12 +1,12 @@
 # Terapia — app Android + site
 
-App para psicólogos e pacientes (Kotlin + Jetpack Compose) com backend no Supabase e site em Next.js na Vercel.
+App para psicólogos e pacientes (Kotlin + Jetpack Compose) com backend no Supabase e site em Next.js na Cloudflare Workers.
 
 ```
 terapia/
 ├── android/      → app Android (abra esta pasta no Android Studio)
 ├── supabase/     → banco de dados (SQL) e Edge Functions (convite, push, assinaturas)
-├── web/          → site (Vercel): início, privacidade, termos, excluir conta, /baixar
+├── web/          → site + painel desktop (Cloudflare Workers): início, privacidade, termos, excluir conta, /baixar, /painel
 └── docs/         → ícone 512×512 para a Play Store
 ```
 
@@ -92,36 +92,51 @@ Depois: **Database → Webhooks → Create** → tabela `notifications`, evento 
 - **Conteúdo do app**: política de privacidade = `https://SEU-SITE/privacidade`; exclusão de conta = `https://SEU-SITE/excluir-conta`; Segurança dos dados: declare dados de saúde, mensagens, e-mail e nome (criptografados em trânsito, exclusão disponível).
 - Ícone: `docs/play-store-icon-512.png`.
 
-### 7. Site (Vercel)
-Edite `web/site.config.ts` (**e-mail de contato real** e responsável) antes de enviar o app à Play. Para atualizar, publique novamente pela Vercel (ou conecte a pasta `web/` a um repositório GitHub na Vercel).
+### 7. Site na Cloudflare (Workers + GitHub)
+O site usa o adaptador oficial **OpenNext** para rodar Next.js no Cloudflare Workers (plano gratuito: 100 mil acessos/dia).
+
+1. Crie a conta em https://dash.cloudflare.com (plano Free).
+2. **Workers & Pages → Create → Import a repository** → conecte o GitHub e escolha `thssxhm/terapia`.
+3. Configure o build:
+   - **Project name:** `terapia` (precisa ser igual ao `name` do `web/wrangler.jsonc`)
+   - **Root directory / Path:** `web`
+   - **Build command:** `npx opennextjs-cloudflare build`
+   - **Deploy command:** `npx opennextjs-cloudflare deploy`
+4. Clique em **Create and deploy**. O endereço será `https://terapia.SEU-SUBDOMINIO.workers.dev`. Use esse endereço (ou um domínio próprio) em todos os lugares onde aparece `SEU-SITE` abaixo.
+5. A cada envio ao GitHub (`main`) o site é publicado sozinho.
+6. Edite `web/site.config.ts` (e-mail de contato e responsável) quando precisar.
+
+**Domínio próprio (opcional):** Workers → terapia → Settings → Domains & Routes → Add → Custom domain. Domínios comprados na própria Cloudflare são vendidos a preço de custo.
+
+**Testar no seu computador:** copie `web/.dev.vars.example` para `web/.dev.vars`, preencha e rode `npm run preview` dentro de `web/`.
 
 ### 8. Terapia Desktop (painel web pago — R$ 14,99/mês pelo Stripe)
 
 O painel fica em `https://SEU-SITE/painel`. Fluxo: o psicólogo entra → 7 dias grátis (sem cartão, uma vez por conta) → depois paga pelo Stripe → o **webhook** confirma o pagamento e libera o acesso sozinho. Se cancelar ou o cartão falhar, o acesso é bloqueado automaticamente.
 
 1. **Banco:** rode `supabase/migrations/20261106000000_desktop.sql` no SQL Editor do Supabase.
-2. **Supabase → Authentication → URL Configuration:** em *Site URL* coloque `https://terapia-pi.vercel.app` e em *Redirect URLs* adicione `https://terapia-pi.vercel.app/painel` (necessário para o login com Google no navegador).
+2. **Supabase → Authentication → URL Configuration:** em *Site URL* coloque `https://SEU-SITE` e em *Redirect URLs* adicione `https://SEU-SITE/painel` (necessário para o login com Google no navegador).
 3. **Stripe** (https://dashboard.stripe.com — comece no **modo de teste**):
    - Crie a conta (pessoa física com CPF é aceita) e preencha os dados bancários para receber.
    - **Catálogo de produtos → Adicionar produto:** "Terapia Desktop", preço **recorrente mensal de R$ 14,99** (BRL). Copie o **ID do preço** (`price_...`).
    - **Configurações → Faturamento → Portal do cliente:** ative "Cancelar assinaturas" e "Atualizar forma de pagamento" e salve.
-   - **Desenvolvedores → Webhooks → Adicionar destino:** URL `https://terapia-pi.vercel.app/api/stripe/webhook`, eventos: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`, `invoice.payment_failed`. Copie o **segredo de assinatura** (`whsec_...`).
+   - **Desenvolvedores → Webhooks → Adicionar destino:** URL `https://SEU-SITE/api/stripe/webhook`, eventos: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `customer.subscription.paused`, `customer.subscription.resumed`, `invoice.paid`, `invoice.payment_failed`. Copie o **segredo de assinatura** (`whsec_...`).
    - **Desenvolvedores → Chaves de API:** copie a **chave secreta** (`sk_test_...` no teste, `sk_live_...` em produção).
-4. **Vercel → projeto terapia → Settings → Environment Variables** (ambiente *Production*):
+4. **Cloudflare → Workers & Pages → terapia → Settings → Variables and Secrets** (adicione cada uma; use o tipo **Secret** para as chaves secretas):
 
-   | Nome | Valor |
-   |---|---|
-   | `NEXT_PUBLIC_SUPABASE_URL` | Project URL do Supabase |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | chave anon do Supabase |
-   | `SUPABASE_SERVICE_ROLE_KEY` | chave service_role do Supabase (**secreta**) |
-   | `STRIPE_SECRET_KEY` | `sk_test_...` / `sk_live_...` |
-   | `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
-   | `STRIPE_PRICE_ID` | `price_...` |
-   | `NEXT_PUBLIC_SITE_URL` | `https://terapia-pi.vercel.app` |
+   | Nome | Tipo | Valor |
+   |---|---|---|
+   | `NEXT_PUBLIC_SUPABASE_URL` | Text | Project URL do Supabase |
+   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Text | chave anon do Supabase |
+   | `SUPABASE_SERVICE_ROLE_KEY` | **Secret** | chave service_role do Supabase |
+   | `STRIPE_SECRET_KEY` | **Secret** | `sk_test_...` / `sk_live_...` |
+   | `STRIPE_WEBHOOK_SECRET` | **Secret** | `whsec_...` |
+   | `STRIPE_PRICE_ID` | Text | `price_...` |
+   | `NEXT_PUBLIC_SITE_URL` | Text | `https://SEU-SITE` |
 
-   Depois **publique de novo** (Deployments → ⋯ → Redeploy): as variáveis `NEXT_PUBLIC_*` só entram no site em uma nova publicação.
+   As variáveis valem na hora: não é preciso republicar (o painel lê as chaves públicas pela rota `/api/config`).
 5. **Teste** com o cartão `4242 4242 4242 4242`, qualquer data futura e qualquer CVC. Confira em Stripe → Webhooks se os eventos voltaram com "200".
-6. **Produção:** repita o passo 3 no modo *live* (produto, webhook e chaves são separados) e troque as variáveis na Vercel.
+6. **Produção:** repita o passo 3 no modo *live* (produto, webhook e chaves são separados) e troque as variáveis na Cloudflare.
 
 ---
 

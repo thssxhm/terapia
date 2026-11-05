@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import type { Session as AuthSession } from "@supabase/supabase-js";
-import { sb, supabaseConfigured } from "../../lib/supabase";
+import { loadSupabaseConfig, sb } from "../../lib/supabase";
 import { hasDesktopAccess, myProfile, notifications } from "../../lib/db";
 import type { Profile } from "../../lib/types";
 import ThemeToggle from "../ThemeToggle";
@@ -24,17 +24,24 @@ export type Go = (v: View) => void;
 
 export default function Painel() {
   const [session, setSession] = useState<AuthSession | null | undefined>(undefined);
+  const [configured, setConfigured] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    if (!supabaseConfigured) return;
-    sb().auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = sb().auth.onAuthStateChange((_e, s) => setSession(s));
-    return () => data.subscription.unsubscribe();
+    let unsub: (() => void) | undefined;
+    loadSupabaseConfig().then((ok) => {
+      setConfigured(ok);
+      if (!ok) return;
+      sb().auth.getSession().then(({ data }) => setSession(data.session));
+      const { data } = sb().auth.onAuthStateChange((_e, s) => setSession(s));
+      unsub = () => data.subscription.unsubscribe();
+    });
+    return () => unsub?.();
   }, []);
 
-  if (!supabaseConfigured) {
+  if (configured === undefined) return <div className="p-loading">Carregando…</div>;
+  if (!configured) {
     return <div className="p-auth"><div className="p-card"><h1>Painel em configuração</h1>
-      <p className="sub">Configure as variáveis do Supabase na Vercel (veja o README) e publique novamente.</p></div></div>;
+      <p className="sub">Configure as variáveis do Supabase na Cloudflare (veja o README).</p></div></div>;
   }
   if (session === undefined) return <div className="p-loading">Carregando…</div>;
   if (!session) return <Login />;
