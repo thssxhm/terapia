@@ -188,7 +188,7 @@ create trigger slots_before_delete before delete on public.schedule_slots
 
 -- Se o psicólogo editar o horário de uma sessão, ela vira "avulsa"
 create or replace function public.detach_edited_session()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql set search_path = public as $$
 begin
   if new.starts_at is distinct from old.starts_at then
     new.slot_id := null;

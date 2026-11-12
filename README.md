@@ -30,7 +30,7 @@ terapia/
 ### 1. Supabase (banco)
 1. Crie um projeto em https://supabase.com (região São Paulo).
 2. **SQL Editor** → cole e rode `supabase/migrations/20261105000000_init.sql`.
-3. **Database → Extensions** → ative `pg_cron` e rode:
+3. **Rode também** `20261106000000_desktop.sql` e `20261112000000_hardening.sql` (nessa ordem). Depois, **Database → Extensions** → ative `pg_cron` e rode:
    `select cron.schedule('estender-agenda', '0 3 * * 1', 'select public.extend_all_sessions()');`
 4. **Authentication → Providers**: deixe *Email* ativo; ative *Google* (passo 3).
 5. **Authentication → Email Templates → Magic Link**: troque o conteúdo para mostrar o código:

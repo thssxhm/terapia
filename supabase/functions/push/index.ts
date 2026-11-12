@@ -28,8 +28,9 @@ function channelFor(type: string): string {
 }
 
 Deno.serve(async (req) => {
+  // Sem WEBHOOK_SECRET configurado a função recusa tudo (evita que qualquer um dispare push)
   const secret = Deno.env.get("WEBHOOK_SECRET");
-  if (secret && req.headers.get("x-webhook-secret") !== secret) return json({ error: "forbidden" }, 403);
+  if (!secret || req.headers.get("x-webhook-secret") !== secret) return json({ error: "forbidden" }, 403);
 
   const payload = await req.json();
   const n: NotificationRow = payload.record;
