@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { site } from "../../../site.config";
+import { site } from "../../site.config";
+import SiteShell from "../SiteShell";
 
 export const metadata: Metadata = { title: "Política de privacidade" };
 
 export default function Privacidade() {
   return (
+    <SiteShell>
     <div className="wrap doc">
       <h1>Política de privacidade</h1>
       <p className="meta">Última atualização: {site.updatedAt}</p>
@@ -82,5 +84,6 @@ export default function Privacidade() {
       <h2>10. Alterações</h2>
       <p>Avisaremos no app sobre mudanças relevantes nesta política.</p>
     </div>
+    </SiteShell>
   );
 }

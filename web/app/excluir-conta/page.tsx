@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { site } from "../../../site.config";
+import { site } from "../../site.config";
+import SiteShell from "../SiteShell";
 
 export const metadata: Metadata = { title: "Excluir conta e dados" };
 
 // Página exigida pela Google Play ("URL para exclusão de conta")
 export default function ExcluirConta() {
   return (
+    <SiteShell>
     <div className="wrap doc">
       <h1>Como excluir sua conta do {site.name}</h1>
       <h2>Pelo aplicativo (imediato)</h2>
@@ -30,5 +32,6 @@ export default function ExcluirConta() {
         sobre um paciente pertencem ao prontuário do psicólogo (controlador), que deve guardá-los conforme as normas do CFP.
       </p>
     </div>
+    </SiteShell>
   );
 }

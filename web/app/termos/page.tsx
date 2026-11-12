@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { site } from "../../../site.config";
+import { site } from "../../site.config";
+import SiteShell from "../SiteShell";
 
 export const metadata: Metadata = { title: "Termos de uso" };
 
 export default function Termos() {
   return (
+    <SiteShell>
     <div className="wrap doc">
       <h1>Termos de uso</h1>
       <p className="meta">Última atualização: {site.updatedAt}</p>
@@ -25,5 +27,6 @@ export default function Termos() {
       <h2>5. Conta</h2>
       <p>Você pode excluir sua conta a qualquer momento pelo app. Contato: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</p>
     </div>
+    </SiteShell>
   );
 }

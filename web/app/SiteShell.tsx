@@ -1,9 +1,10 @@
 import Link from "next/link";
-import ThemeToggle from "../ThemeToggle";
-import { site } from "../../site.config";
+import ThemeToggle from "./ThemeToggle";
+import { site } from "../site.config";
 
-// Cabeçalho e rodapé das páginas públicas (o /painel tem layout próprio)
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+// Cabeçalho e rodapé das páginas públicas (o /painel não usa).
+// Sem pasta "(site)": nomes com parênteses causam redirecionamento infinito na Cloudflare.
+export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="top">

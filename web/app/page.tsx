@@ -1,4 +1,5 @@
-import { site } from "../../site.config";
+import { site } from "../site.config";
+import SiteShell from "./SiteShell";
 
 const psyFeatures = [
   ["📋", "Prontuário completo", "Anamnese, evolução, informações importantes (nomes e datas), anotações pré e pós sessão e anexos em PDF/DOC."],
@@ -21,6 +22,7 @@ const patientFeatures = [
 
 export default function Home() {
   return (
+    <SiteShell>
     <>
       <div className="wrap">
         <div className="hero">
@@ -114,5 +116,6 @@ export default function Home() {
         </div>
       </section>
     </>
+    </SiteShell>
   );
 }
