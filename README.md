@@ -102,7 +102,7 @@ O site usa o adaptador oficial **OpenNext** para rodar Next.js no Cloudflare Wor
    - **Root directory / Path:** `web`
    - **Build command:** `npx opennextjs-cloudflare build`
    - **Deploy command:** `npx opennextjs-cloudflare deploy`
-4. Clique em **Create and deploy**. O endereço será `https://terapia.SEU-SUBDOMINIO.workers.dev`. Use esse endereço (ou um domínio próprio) em todos os lugares onde aparece `terapia.thssxhm.workers.dev` abaixo.
+4. Clique em **Create and deploy**. Endereço publicado: **https://terapia.thssxhm.workers.dev**
 5. A cada envio ao GitHub (`main`) o site é publicado sozinho.
 6. Edite `web/site.config.ts` (e-mail de contato e responsável) quando precisar.
 
